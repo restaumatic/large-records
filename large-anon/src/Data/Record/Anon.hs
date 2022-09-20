@@ -21,6 +21,7 @@
 module Data.Record.Anon (
     -- * Rows
     pattern (:=)
+  , Pair
   , Row
   , Merge
 
