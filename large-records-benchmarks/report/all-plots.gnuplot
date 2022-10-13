@@ -552,7 +552,7 @@ set ylabel "Compilation time (ms)"
 set output "graphs/large-anon-vs-superrecord-vs-vinyl-construct-timing.png"
 plot "<(cat timing.csv | grep SR_Unsafe)"          using 2:3 with lines lt rgb "#EE2222" title "superrecord (unsafe)" \
    , "<(cat timing.csv | grep ConstructNoTypeLet)" using 2:3 with lines lt rgb "#22EE22" title "large-anon" \
-   , "<(cat timing.csv | grep V_Construct)" using 2:7 with lines lt rgb "#222222" title "vinyl"
+   , "<(cat timing.csv | grep V_Construct)"        using 2:3 with lines lt rgb "#222222" title "vinyl"
 
 
 set ylabel "Runtime (s)"
@@ -586,7 +586,7 @@ set ylabel "Compilation time (ms)"
 set output "graphs/large-anon-vs-superrecord-vs-vinyl-get-timing.png"
 plot "<(cat timing.csv | grep SR_GetEvens)" using 2:3 with lines lt rgb "#EE2222" title "superrecord" \
    , "<(cat timing.csv | grep ^GetEvens)"   using 2:3 with lines lt rgb "#22EE22" title "large-anon" \
-   , "<(cat timing.csv | grep V_GetEvens)"  using 2:7 with lines lt rgb "#22EEEE" title "vinyl"
+   , "<(cat timing.csv | grep V_GetEvens)"  using 2:3 with lines lt rgb "#22EEEE" title "vinyl"
 
 
 
@@ -598,8 +598,8 @@ plot "<(cat runtime.csv | grep SR_GetEvens        | tr / ,)" using 2:3 with line
                                                         , '' using 2:3:($3-$6):($3+$6) with yerrorbars lt rgb '#2222EE' notitle \
    , "<(cat runtime.csv | grep GetEvensAfterApply | tr / ,)" using 2:3 with lines lt rgb "#22EE22" title "large-anon (after applyPending)" \
                                                         , '' using 2:3:($3-$6):($3+$6) with yerrorbars lt rgb '#22EE22' notitle \
-   , "<(cat runtime.csv | grep V_GetEvens         | tr / ,)" using 2:3 with lines lt rgb "#E2222E" title "vinyl" \
-                                                        , '' using 2:3:($3-$6):($3+$6) with yerrorbars lt rgb '#E2222E' notitle
+   , "<(cat runtime.csv | grep V_GetEvens         | tr / ,)" using 2:3 with lines lt rgb "#000000" title "vinyl" \
+                                                        , '' using 2:3:($3-$6):($3+$6) with yerrorbars lt rgb '#000000' notitle
 
 
 ## large-anon: field override (many fields), compared to superrecord and vinyl
@@ -616,7 +616,7 @@ set ylabel "Compilation time (ms)"
 set output "graphs/large-anon-vs-superrecord-vs-vinyl-set-timing.png"
 plot "<(cat timing.csv | grep SR_SetEvens)" using 2:3 with lines lt rgb "#EE2222" title "superrecord" \
    , "<(cat timing.csv | grep ^SetEvens)"   using 2:3 with lines lt rgb "#22EE22" title "large-anon" \
-   , "<(cat timing.csv | grep V_SetEvens)"  using 2:3 with lines lt rgb "#2222EE" title "vinyl"
+   , "<(cat timing.csv | grep V_SetEvens)"  using 2:3 with lines lt rgb "#000000" title "vinyl"
 
 set ylabel "Runtime (s)"
 set output "graphs/large-anon-vs-superrecord-vs-vinyl-set-runtime.png"
@@ -626,8 +626,8 @@ plot "<(cat runtime.csv | grep SR_SetEvens       | tr / ,)" using 2:3 with lines
                                                        , '' using 2:3:($3-$6):($3+$6) with yerrorbars lt rgb '#2222EE' notitle \
    , "<(cat runtime.csv | grep SetEvensThenApply | tr / ,)" using 2:3 with lines lt rgb "#22EE22" title "large-anon (followed by applyPending)" \
                                                        , '' using 2:3:($3-$6):($3+$6) with yerrorbars lt rgb '#22EE22' notitle \
-   , "<(cat runtime.csv | grep V_SetEvens        | tr / ,)" using 2:3 with lines lt rgb "#E2222E" title "vinyl" \
-                                                       , '' using 2:3:($3-$6):($3+$6) with yerrorbars lt rgb '#E2222E' notitle \
+   , "<(cat runtime.csv | grep V_SetEvens        | tr / ,)" using 2:3 with lines lt rgb "#000000" title "vinyl" \
+                                                       , '' using 2:3:($3-$6):($3+$6) with yerrorbars lt rgb '#000000' notitle \
 
 ## large-anon: update single field, compared to superrecord and vinyl
 
@@ -637,13 +637,14 @@ set ylabel "Core size (terms + types + coercions)"
 set output "graphs/large-anon-vs-superrecord-vs-vinyl-updateone-coresize.png"
 plot "<(cat coresize.csv | grep SR_UpdateOne | grep simpl,)" using 2:7 with lines lt rgb "#EE2222" title "superrecord (simpl)" \
    , "<(cat coresize.csv | grep ^UpdateOne   | grep simpl,)" using 2:7 with lines lt rgb "#22EE22" title "large-anon (simpl)" \
-   , "<(cat coresize.csv | grep V_UpdateOne  | grep simpl,)" using 2:7 with lines lt rgb "#2222EE" title "vinyl"
+   , "<(cat coresize.csv | grep V_UpdateOne  | grep simpl,)" using 2:7 with lines lt rgb "#000000" title "vinyl" \
 
 set ylabel "Compilation time (ms)"
 set output "graphs/large-anon-vs-superrecord-vs-vinyl-updateone-timing.png"
 plot "<(cat timing.csv | grep SR_UpdateOne)" using 2:3 with lines lt rgb "#EE2222" title "superrecord" \
    , "<(cat timing.csv | grep ^UpdateOne)"   using 2:3 with lines lt rgb "#22EE22" title "large-anon" \
-   , "<(cat timing.csv | grep ^UpdateOne)"   using 2:3 with lines lt rgb "#2222EE" title "vinyl"
+   , "<(cat timing.csv | grep V_UpdateOne)"   using 2:3 with lines lt rgb "#000000" title "vinyl" \
+
 
 set ylabel "Runtime (s)"
 set output "graphs/large-anon-vs-superrecord-vs-vinyl-updateone-runtime.png"
@@ -653,5 +654,5 @@ plot "<(cat runtime.csv | grep SR_UpdateOne       | tr / ,)" using 2:3 with line
                                                        , '' using 2:3:($3-$6):($3+$6) with yerrorbars lt rgb '#2222EE' notitle \
    , "<(cat runtime.csv | grep UpdateOneThenApply | tr / ,)" using 2:3 with lines lt rgb "#22EE22" title "large-anon (followed by applyPending)" \
                                                        , '' using 2:3:($3-$6):($3+$6) with yerrorbars lt rgb '#22EE22' notitle \
-   , "<(cat runtime.csv | grep V_UpdateOne        | tr / ,)" using 2:3 with lines lt rgb "#E2222E" title "vinyl" \
-                                                       , '' using 2:3:($3-$6):($3+$6) with yerrorbars lt rgb '#E2222E' notitle \
+   , "<(cat runtime.csv | grep V_UpdateOne        | tr / ,)" using 2:3 with lines lt rgb "#000000" title "vinyl" \
+                                                       , '' using 2:3:($3-$6):($3+$6) with yerrorbars lt rgb '#000000' notitle \
