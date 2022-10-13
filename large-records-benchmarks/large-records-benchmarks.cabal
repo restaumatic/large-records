@@ -734,6 +734,112 @@ executable bench-superrecord
     ghc-options:
       -O1
 
+
+executable bench-vinyl
+  import:
+      defaults
+    , benchmark
+  main-is:
+      Main.hs
+  hs-source-dirs:
+      bench/vinyl
+  build-depends:
+      aeson
+    , composite-base
+    , deepseq
+    , lens
+    , vinyl
+  default-extensions:
+      ConstraintKinds
+      DataKinds
+      FlexibleContexts
+      FlexibleInstances
+      FunctionalDependencies
+      GADTs
+      GeneralizedNewtypeDeriving
+      MultiParamTypeClasses
+      NamedFieldPuns
+      OverloadedStrings
+      PatternSynonyms
+      PolyKinds
+      RankNTypes
+      RecordWildCards
+      ScopedTypeVariables
+      StandaloneDeriving
+      StrictData
+      TemplateHaskell
+      TupleSections
+      TypeApplications
+      TypeFamilies
+      TypeOperators
+      ViewPatterns
+  other-modules:
+
+
+      Common.Record
+      --
+      -- The SR_Construct benchmark is expensive: only measure up to 40 fields, is it?
+      --
+      -- The other benchmarks also get expensive for larger records, but we
+      -- can go up to 80 without things getting /too/ ridiculous.
+      --
+      -- (These benchmarks are /especially/ expensive when we measure the core
+      -- size using @-ddump-ds-preopt@ and friends.)
+      --
+
+      Common.RowOfSize.Row010
+      Common.RowOfSize.Row020
+      Common.RowOfSize.Row030
+      Common.RowOfSize.Row040
+      Common.RowOfSize.Row050
+      Common.RowOfSize.Row060
+      Common.RowOfSize.Row070
+      Common.RowOfSize.Row080
+
+      Experiment.V_Construct.Sized.R000
+      Experiment.V_Construct.Sized.R010
+      Experiment.V_Construct.Sized.R020
+      Experiment.V_Construct.Sized.R030
+      Experiment.V_Construct.Sized.R040
+      Experiment.V_Construct.Sized.R050
+      Experiment.V_Construct.Sized.R060
+      Experiment.V_Construct.Sized.R070
+      Experiment.V_Construct.Sized.R080
+
+      Experiment.V_GetEvens.Sized.R000
+      Experiment.V_GetEvens.Sized.R010
+      Experiment.V_GetEvens.Sized.R020
+      Experiment.V_GetEvens.Sized.R030
+      Experiment.V_GetEvens.Sized.R040
+      Experiment.V_GetEvens.Sized.R050
+      Experiment.V_GetEvens.Sized.R060
+      Experiment.V_GetEvens.Sized.R070
+      Experiment.V_GetEvens.Sized.R080
+
+      Experiment.V_SetEvens.Sized.R000
+      Experiment.V_SetEvens.Sized.R010
+      Experiment.V_SetEvens.Sized.R020
+      Experiment.V_SetEvens.Sized.R030
+      Experiment.V_SetEvens.Sized.R040
+      Experiment.V_SetEvens.Sized.R050
+      Experiment.V_SetEvens.Sized.R060
+      Experiment.V_SetEvens.Sized.R070
+      Experiment.V_SetEvens.Sized.R080
+
+      -- Experiment.V_UpdateOne.Sized.R000
+      -- Experiment.V_UpdateOne.Sized.R010
+      -- Experiment.V_UpdateOne.Sized.R020
+      -- Experiment.V_UpdateOne.Sized.R030
+      -- Experiment.V_UpdateOne.Sized.R040
+      -- Experiment.V_UpdateOne.Sized.R050
+      -- Experiment.V_UpdateOne.Sized.R060
+      -- Experiment.V_UpdateOne.Sized.R070
+      -- Experiment.V_UpdateOne.Sized.R080
+
+  if flag(profile-runtime)
+    ghc-options:
+      -O1
+
 --
 -- TEST SUITE
 --
