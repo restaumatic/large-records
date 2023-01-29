@@ -335,8 +335,8 @@ sequenceA' = sequenceA . co
     co :: Record m r -> Record (m :.: I) r
     co = noInlineUnsafeCo
 
-sequencePP :: ProductProfunctor p => Record (Canon.FunctorTransform p f g) r -> p (Record f r) (Record g r)
-sequencePP = dimap toCanonical unsafeFromCanonical . Canon.sequencePP . toCanonical
+mapPP :: ProductProfunctor p => (forall x. h x -> p (f x) (g x)) -> Record h r -> p (Record f r) (Record g r)
+mapPP f = dimap toCanonical unsafeFromCanonical . Canon.mapPP f . toCanonical
 
 -- | Equivalent to 'PD.Default p (f x) (g x)', but expressed as a separate typeclass
 -- so that it can be partially applied and used in 'AllFields'.
@@ -348,8 +348,7 @@ instance PD.Default p (f x) (g x) => DefaultFunctorTransform p f g x where
 
 instance (ProductProfunctor p, AllFields r (DefaultFunctorTransform p f g))
   => PD.Default p (Record f r) (Record g r) where
-  def = sequencePP $
-    map (\Dict -> Canon.FunctorTransform defaultFunctorTransform) $
+  def = mapPP (\Dict -> defaultFunctorTransform) $
     reifyAllFields (Proxy @(DefaultFunctorTransform p f g))
 
 pure :: forall f r. KnownFields r => (forall x. f x) -> Record f r

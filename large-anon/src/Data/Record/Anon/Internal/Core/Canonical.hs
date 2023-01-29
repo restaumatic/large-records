@@ -41,8 +41,7 @@ module Data.Record.Anon.Internal.Core.Canonical (
   , sequenceA
   , ap
 
-  , FunctorTransform(..)
-  , sequencePP
+  , mapPP
     -- * Debugging support
 #if DEBUG
   , toString
@@ -216,11 +215,9 @@ collapse (Canonical v) = co $ Foldable.toList v
 sequenceA :: Applicative m => Canonical (m :.: f) -> m (Canonical f)
 sequenceA (Canonical v) = Canonical <$> Strict.mapM unComp v
 
-newtype FunctorTransform p f g x = FunctorTransform { unFunctorTransform :: p (f x) (g x) }
-
-sequencePP :: ProductProfunctor p => Canonical (FunctorTransform p f g) -> p (Canonical f) (Canonical g)
-sequencePP transforms =
-  dimap toList fromList $ sequencePPList $ fmap unFunctorTransform $ toList transforms
+mapPP :: ProductProfunctor p => (forall x. h x -> p (f x) (g x)) -> Canonical h -> p (Canonical f) (Canonical g)
+mapPP f v =
+  dimap toList fromList $ sequencePPList $ fmap f $ toList v
 
 sequencePPList :: ProductProfunctor p => [p a b] -> p [a] [b]
 sequencePPList = foldr (\x pxs -> (:) ***$ lmap head x **** lmap tail pxs) (purePP [])
