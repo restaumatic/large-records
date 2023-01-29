@@ -116,6 +116,9 @@ import qualified Data.Record.Anon.Internal.Core.Canonical   as Canon
 import qualified Data.Record.Anon.Internal.Core.Diff        as Diff
 import qualified Data.Record.Anon.Internal.Reflection       as Unsafe
 import qualified Data.Record.Anon.Internal.Util.StrictArray as Strict
+import Data.Profunctor.Product (ProductProfunctor)
+import Data.Profunctor (Profunctor(dimap))
+import qualified Data.Profunctor.Product.Default as PD
 
 {-------------------------------------------------------------------------------
   Definition
@@ -331,6 +334,23 @@ sequenceA' = sequenceA . co
   where
     co :: Record m r -> Record (m :.: I) r
     co = noInlineUnsafeCo
+
+sequencePP :: ProductProfunctor p => Record (Canon.FunctorTransform p f g) r -> p (Record f r) (Record g r)
+sequencePP = dimap toCanonical unsafeFromCanonical . Canon.sequencePP . toCanonical
+
+-- | Equivalent to 'PD.Default p (f x) (g x)', but expressed as a separate typeclass
+-- so that it can be partially applied and used in 'AllFields'.
+class DefaultFunctorTransform p f g x where
+  defaultFunctorTransform :: p (f x) (g x)
+
+instance PD.Default p (f x) (g x) => DefaultFunctorTransform p f g x where
+  defaultFunctorTransform = PD.def
+
+instance (ProductProfunctor p, AllFields r (DefaultFunctorTransform p f g))
+  => PD.Default p (Record f r) (Record g r) where
+  def = sequencePP $
+    map (\Dict -> Canon.FunctorTransform defaultFunctorTransform) $
+    reifyAllFields (Proxy @(DefaultFunctorTransform p f g))
 
 pure :: forall f r. KnownFields r => (forall x. f x) -> Record f r
 pure f = unsafeFromCanonical $

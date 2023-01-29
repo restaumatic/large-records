@@ -40,6 +40,9 @@ module Data.Record.Anon.Internal.Core.Canonical (
   , collapse
   , sequenceA
   , ap
+
+  , FunctorTransform(..)
+  , sequencePP
     -- * Debugging support
 #if DEBUG
   , toString
@@ -63,6 +66,8 @@ import qualified Data.Foldable as Foldable
 import Data.Record.Anon.Internal.Util.StrictArray (StrictArray)
 
 import qualified Data.Record.Anon.Internal.Util.StrictArray as Strict
+import Data.Profunctor.Product (ProductProfunctor (..), (***$))
+import Data.Profunctor
 
 {-------------------------------------------------------------------------------
   Definition
@@ -210,6 +215,15 @@ collapse (Canonical v) = co $ Foldable.toList v
 
 sequenceA :: Applicative m => Canonical (m :.: f) -> m (Canonical f)
 sequenceA (Canonical v) = Canonical <$> Strict.mapM unComp v
+
+newtype FunctorTransform p f g x = FunctorTransform { unFunctorTransform :: p (f x) (g x) }
+
+sequencePP :: ProductProfunctor p => Canonical (FunctorTransform p f g) -> p (Canonical f) (Canonical g)
+sequencePP transforms =
+  dimap toList fromList $ sequencePPList $ fmap unFunctorTransform $ toList transforms
+
+sequencePPList :: ProductProfunctor p => [p a b] -> p [a] [b]
+sequencePPList = foldr (\x pxs -> (:) ***$ lmap head x **** lmap tail pxs) (purePP [])
 
 ap :: Canonical (f -.-> g) -> Canonical f -> Canonical g
 ap = zipWith apFn
