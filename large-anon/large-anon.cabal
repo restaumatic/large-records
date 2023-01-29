@@ -88,6 +88,9 @@ library
 
       -- Whatever version is bundled with ghc
     , ghc
+
+    , product-profunctors
+    , profunctors
   hs-source-dirs:
       src
   default-language:
