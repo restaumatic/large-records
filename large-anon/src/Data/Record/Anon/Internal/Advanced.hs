@@ -27,6 +27,7 @@ module Data.Record.Anon.Internal.Advanced (
     Record -- opaque
     -- * Main API
   , Field(..)
+
   , empty
   , insert
   , insertA
@@ -74,6 +75,7 @@ module Data.Record.Anon.Internal.Advanced (
     -- * Support for @typelet@
   , letRecordT
   , letInsertAs
+  , DefaultFunctorTransform(..)
   ) where
 
 import Prelude hiding (map, mapM, zip, zipWith, sequenceA, pure)
@@ -675,5 +677,3 @@ letInsertAs :: forall r r' f n a.
                    -- ^ Assign type variable to new partial record, and continue
   -> Record f r
 letInsertAs _ n x r = letAs' (insert n x r)
-
-
